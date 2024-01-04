@@ -98,11 +98,10 @@ type Container struct {
 
 	// Fields here are specific to Unix platforms
 	SecurityOptions
-	HostnamePath                 string
-	HostsPath                    string
-	ShmPath                      string
-	ResolvConfPath               string
-	PrivilegedWithoutHostDevices bool
+	HostnamePath   string
+	HostsPath      string
+	ShmPath        string
+	ResolvConfPath string
 
 	// Fields here are specific to Windows
 	NetworkSharedContainerID string            `json:"-"`
@@ -112,11 +111,12 @@ type Container struct {
 
 type SecurityOptions struct {
 	// MountLabel contains the options for the "mount" command.
-	MountLabel      string
-	ProcessLabel    string
-	AppArmorProfile string
-	SeccompProfile  string
-	NoNewPrivileges bool
+	MountLabel                   string
+	ProcessLabel                 string
+	AppArmorProfile              string
+	SeccompProfile               string
+	NoNewPrivileges              bool
+	PrivilegedWithoutHostDevices bool
 }
 
 type localLogCacheMeta struct {

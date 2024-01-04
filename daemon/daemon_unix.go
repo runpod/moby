@@ -213,7 +213,7 @@ func parseSecurityOpt(securityOptions *container.SecurityOptions, config *contai
 			continue
 		}
 		if opt == "privileged-without-host-devices" {
-			container.PrivilegedWithoutHostDevices = true
+			securityOptions.PrivilegedWithoutHostDevices = true
 			continue
 		}
 		if opt == "disable" {
@@ -251,7 +251,7 @@ func parseSecurityOpt(securityOptions *container.SecurityOptions, config *contai
 			if err != nil {
 				return fmt.Errorf("invalid --security-opt 2: %q", opt)
 			}
-			container.PrivilegedWithoutHostDevices = pwohd
+			securityOptions.PrivilegedWithoutHostDevices = pwohd
 		default:
 			return fmt.Errorf("invalid --security-opt 2: %q", opt)
 		}
