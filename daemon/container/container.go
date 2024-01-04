@@ -134,6 +134,12 @@ type SecurityOptions struct {
 	SeccompProfile  string
 	NoNewPrivileges bool
 	WritableCgroups *bool
+
+	// PrivilegedWithoutHostDevices disables the implicit injection of host
+	// devices into privileged containers. It is required by VM-based runtimes
+	// such as Kata, for which passing the host's devices into the guest is
+	// meaningless and unsafe.
+	PrivilegedWithoutHostDevices bool
 }
 
 type localLogCacheMeta struct {

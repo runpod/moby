@@ -217,6 +217,10 @@ func parseSecurityOpt(securityOptions *container.SecurityOptions, config *contai
 			securityOptions.WritableCgroups = &trueVal
 			continue
 		}
+		if opt == "privileged-without-host-devices" {
+			securityOptions.PrivilegedWithoutHostDevices = true
+			continue
+		}
 		if opt == "disable" {
 			labelOpts = append(labelOpts, "disable")
 			continue
@@ -253,6 +257,12 @@ func parseSecurityOpt(securityOptions *container.SecurityOptions, config *contai
 				return fmt.Errorf("invalid --security-opt 2: %q", opt)
 			}
 			securityOptions.WritableCgroups = &writableCgroups
+		case "privileged-without-host-devices":
+			pwohd, err := strconv.ParseBool(v)
+			if err != nil {
+				return fmt.Errorf("invalid --security-opt 2: %q", opt)
+			}
+			securityOptions.PrivilegedWithoutHostDevices = pwohd
 		default:
 			return fmt.Errorf("invalid --security-opt 2: %q", opt)
 		}
