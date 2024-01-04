@@ -98,10 +98,11 @@ type Container struct {
 
 	// Fields here are specific to Unix platforms
 	SecurityOptions
-	HostnamePath   string
-	HostsPath      string
-	ShmPath        string
-	ResolvConfPath string
+	HostnamePath                 string
+	HostsPath                    string
+	ShmPath                      string
+	ResolvConfPath               string
+	PrivilegedWithoutHostDevices bool
 
 	// Fields here are specific to Windows
 	NetworkSharedContainerID string            `json:"-"`
