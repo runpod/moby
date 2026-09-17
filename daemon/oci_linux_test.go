@@ -370,6 +370,49 @@ func TestGetSourceMount(t *testing.T) {
 	assert.NilError(t, err)
 }
 
+func TestWithDevicesPrivilegedWithoutHostDevices(t *testing.T) {
+	// WithDevices only dereferences the daemon to service HostConfig.DeviceRequests,
+	// which none of these cases set, so a nil daemon is sufficient here.
+	var d *Daemon
+
+	t.Run("rejected without privileged", func(t *testing.T) {
+		c := &container.Container{
+			SecurityOptions: container.SecurityOptions{PrivilegedWithoutHostDevices: true},
+			HostConfig:      &containertypes.HostConfig{Privileged: false},
+		}
+		s := daemonoci.DefaultSpec()
+
+		err := WithDevices(d, c)(t.Context(), nil, nil, &s)
+		assert.Error(t, err, "privileged-without-host-devices requires privileged mode to be enabled")
+	})
+
+	t.Run("suppresses host devices when privileged", func(t *testing.T) {
+		c := &container.Container{
+			SecurityOptions: container.SecurityOptions{PrivilegedWithoutHostDevices: true},
+			HostConfig:      &containertypes.HostConfig{Privileged: true},
+		}
+		s := daemonoci.DefaultSpec()
+
+		err := WithDevices(d, c)(t.Context(), nil, nil, &s)
+		assert.NilError(t, err)
+		assert.Check(t, is.Len(s.Linux.Devices, 0))
+	})
+
+	t.Run("privileged alone still injects host devices", func(t *testing.T) {
+		// Control for the case above: if privileged mode stopped injecting host
+		// devices for some unrelated reason, the assertion there would pass for
+		// the wrong reason and the option would be untested.
+		c := &container.Container{
+			HostConfig: &containertypes.HostConfig{Privileged: true},
+		}
+		s := daemonoci.DefaultSpec()
+
+		err := WithDevices(d, c)(t.Context(), nil, nil, &s)
+		assert.NilError(t, err)
+		assert.Check(t, len(s.Linux.Devices) > 0, "expected privileged mode to inject the host's devices")
+	})
+}
+
 func TestDefaultResources(t *testing.T) {
 	skip.If(t, os.Getuid() != 0, "skipping test that requires root") // TODO: is this actually true? I'm guilty of following the cargo cult here.
 

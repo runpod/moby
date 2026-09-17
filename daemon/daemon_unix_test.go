@@ -170,6 +170,43 @@ func TestParseSecurityOpt(t *testing.T) {
 		})
 		assert.Error(t, err, `invalid --security-opt 2: "writable-cgroups=dang"`)
 	})
+	t.Run("privileged-without-host-devices", func(t *testing.T) {
+		secOpts := &container.SecurityOptions{}
+		err := parseSecurityOpt(secOpts, &containertypes.HostConfig{
+			SecurityOpt: []string{"privileged-without-host-devices"},
+		})
+		assert.Check(t, err)
+		assert.Check(t, is.Equal(secOpts.PrivilegedWithoutHostDevices, true))
+	})
+	t.Run("privileged-without-host-devices=true", func(t *testing.T) {
+		secOpts := &container.SecurityOptions{}
+		err := parseSecurityOpt(secOpts, &containertypes.HostConfig{
+			SecurityOpt: []string{"privileged-without-host-devices=true"},
+		})
+		assert.Check(t, err)
+		assert.Check(t, is.Equal(secOpts.PrivilegedWithoutHostDevices, true))
+	})
+	t.Run("privileged-without-host-devices=false", func(t *testing.T) {
+		secOpts := &container.SecurityOptions{}
+		err := parseSecurityOpt(secOpts, &containertypes.HostConfig{
+			SecurityOpt: []string{"privileged-without-host-devices=false"},
+		})
+		assert.Check(t, err)
+		assert.Check(t, is.Equal(secOpts.PrivilegedWithoutHostDevices, false))
+	})
+	t.Run("not set", func(t *testing.T) {
+		secOpts := &container.SecurityOptions{}
+		err := parseSecurityOpt(secOpts, &containertypes.HostConfig{})
+		assert.Check(t, err)
+		assert.Check(t, is.Equal(secOpts.PrivilegedWithoutHostDevices, false))
+	})
+	t.Run("invalid privileged-without-host-devices", func(t *testing.T) {
+		secOpts := &container.SecurityOptions{}
+		err := parseSecurityOpt(secOpts, &containertypes.HostConfig{
+			SecurityOpt: []string{"privileged-without-host-devices=dang"},
+		})
+		assert.Error(t, err, `invalid --security-opt 2: "privileged-without-host-devices=dang"`)
+	})
 }
 
 func TestParseNNPSecurityOptions(t *testing.T) {
