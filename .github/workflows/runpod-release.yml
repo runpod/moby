@@ -1,0 +1,91 @@
+name: runpod-release
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*-rp'
+
+env:
+  DESTDIR: ./build
+  SETUP_BUILDX_VERSION: edge
+  SETUP_BUILDKIT_IMAGE: moby/buildkit:latest
+
+jobs:
+  create-release:
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: write
+    steps:
+      -
+        name: Create release if absent
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release view "$TAG" > /dev/null 2>&1 ||
+            gh release create "$TAG" --title "$TAG" --notes "Runpod fork build of $TAG."
+
+  build:
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    needs:
+      - create-release
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-26.04
+            arch: amd64
+          - runner: ubuntu-26.04-arm
+            arch: arm64
+    steps:
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
+        with:
+          cache-binary: false
+          version: ${{ env.SETUP_BUILDX_VERSION }}
+          driver-opts: image=${{ env.SETUP_BUILDKIT_IMAGE }}
+          buildkitd-flags: --debug
+      -
+        name: Build
+        uses: docker/bake-action@d3418bd7d0e9324001bca92fa8ba175ea7e6dc9b # v7.3.0
+        with:
+          targets: all
+        env:
+          DOCKER_GITCOMMIT: ${{ github.sha }}
+          VERSION: ${{ github.ref_name }}
+      -
+        name: List artifacts
+        run: |
+          tree -nh ${{ env.DESTDIR }}
+      -
+        name: Package
+        env:
+          TAG: ${{ github.ref_name }}
+          ARCH: ${{ matrix.arch }}
+        run: |
+          tar --exclude=./provenance.json -czf "moby-${TAG}-linux-${ARCH}.tar.gz" -C "${DESTDIR}" .
+          cp "${DESTDIR}/dockerd" "dockerd-linux-${ARCH}"
+      -
+        name: Upload to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+          ARCH: ${{ matrix.arch }}
+        run: |
+          gh release upload "$TAG" \
+            "moby-${TAG}-linux-${ARCH}.tar.gz" \
+            "dockerd-linux-${ARCH}" \
+            --clobber
