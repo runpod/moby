@@ -9,13 +9,18 @@ Because moby uses the shim interface and crafts the OCI spec, we need this patch
 
 ## Existing changes
 
-We currently have two commits (one will be added for this document) that are reachable from `29.8.1-rp` minus anything reachable from `docker-v29.8.1`:
+These commits are reachable from `29.8.1-rp` minus anything reachable from `docker-v29.8.1` (plus the CI fix that follows them):
 
 ```console
 ❯ git log docker-v29.8.1..29.8.1-rp --oneline
-16656caae0 (HEAD -> 29.8.1-rp, origin/29.8.1-rp, origin) daemon: test privileged-without-host-devices
+416dcba33f ci: publish fork release artifacts on -rp tags
+a2c317b894 ci: don't push bin-image from forks
+06614b7db0 doc: add README-runpod.md describing runpod's fork
+16656caae0 daemon: test privileged-without-host-devices
 b2232fcd62 new security-opt: privileged-without-host-devices
 ```
+
+`a2c317b894` was accepted upstream as `cd9d0669ac` and ships in `docker-v29.9.0`; skip it when cherry-picking onto that version or later.
 
 The whole delta as one patch can be queried using `git diff docker-v29.8.1..29.8.1-rp`.
 

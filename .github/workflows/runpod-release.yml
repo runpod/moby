@@ -64,7 +64,7 @@ jobs:
           targets: all
         env:
           DOCKER_GITCOMMIT: ${{ github.sha }}
-          VERSION: ${{ github.ref_name }}
+          VERSION: ${{ github.ref }}
       -
         name: List artifacts
         run: |
