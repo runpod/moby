@@ -31,10 +31,9 @@ jobs:
     uses: ./.github/workflows/.dco.yml
 
   build-linux:
-    if: ${{ github.repository == 'moby/moby' }}
     runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 60 # guardrails timeout for the whole job
-    if: ${{ github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only') }}
+    if: ${{ github.repository == 'moby/moby' && (github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only')) }}
     needs:
       - validate-dco
     steps:
@@ -60,10 +59,9 @@ jobs:
           retention-days: 1
 
   test-linux:
-    if: ${{ github.repository == 'moby/moby' }}
     runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 60 # guardrails timeout for the whole job
-    if: ${{ github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only') }}
+    if: ${{ github.repository == 'moby/moby' && (github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only')) }}
     needs:
       - build-linux
     env:
@@ -169,10 +167,9 @@ jobs:
         working-directory: buildkit
 
   build-windows:
-    if: ${{ github.repository == 'moby/moby' }}
     runs-on: windows-2022
     timeout-minutes: 60 # guardrails timeout for the whole job
-    if: ${{ github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only') }}
+    if: ${{ github.repository == 'moby/moby' && (github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only')) }}
     needs:
       - validate-dco
     env:
@@ -256,10 +253,9 @@ jobs:
           retention-days: 2
 
   test-windows:
-    if: ${{ github.repository == 'moby/moby' }}
     runs-on: windows-2022
     timeout-minutes: 60 # guardrails timeout for the whole job
-    if: ${{ github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only') }}
+    if: ${{ github.repository == 'moby/moby' && (github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only')) }}
     needs:
       - build-windows
     env:
