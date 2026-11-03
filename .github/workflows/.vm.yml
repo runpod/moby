@@ -25,7 +25,8 @@ env:
 
 jobs:
   integration:
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    # Boots a Lima VM; Blacksmith's kernel ships no kvm module.
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     continue-on-error: ${{ github.event_name != 'pull_request' }}
     if: ${{ github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only') }}

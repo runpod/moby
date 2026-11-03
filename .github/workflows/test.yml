@@ -246,7 +246,9 @@ jobs:
           fields: platforms
 
   smoke:
-    runs-on: blacksmith-4vcpu-ubuntu-2404
+    # Cross-platform binaries run under qemu, which Blacksmith's kernel cannot
+    # emulate inside the buildkit container.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20 # guardrails timeout for the whole job
     if: ${{ github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only') }}
     needs:
