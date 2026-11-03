@@ -42,9 +42,9 @@ jobs:
             target: binary
           - runner: blacksmith-4vcpu-ubuntu-2404
             target: dynbinary
-          - runner: blacksmith-4vcpu-ubuntu-2404-arm
+          - runner: ubuntu-24.04-arm
             target: binary
-          - runner: blacksmith-4vcpu-ubuntu-2404-arm
+          - runner: ubuntu-24.04-arm
             target: dynbinary
     steps:
       -
