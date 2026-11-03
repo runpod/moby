@@ -167,7 +167,7 @@ jobs:
           retention-days: 1
 
   unit-test-report:
-    runs-on: blacksmith-4vcpu-ubuntu-2604
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 120 # guardrails timeout for the whole job
     if: always()
     needs:
@@ -197,7 +197,7 @@ jobs:
           fi
 
   integration-test-prepare:
-    runs-on: blacksmith-4vcpu-ubuntu-2604
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 120 # guardrails timeout for the whole job
     outputs:
       matrix: ${{ steps.tests.outputs.matrix }}
@@ -419,7 +419,7 @@ jobs:
           retention-days: 1
 
   integration-test-report:
-    runs-on: blacksmith-4vcpu-ubuntu-2604
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 120 # guardrails timeout for the whole job
     continue-on-error: ${{ inputs.storage == 'snapshotter' && github.event_name != 'pull_request' }}
     if: always()
