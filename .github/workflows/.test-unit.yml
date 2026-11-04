@@ -30,7 +30,7 @@ env:
 
 jobs:
   unit:
-    runs-on: ${{ inputs.runnerSuffix == '-arm' && 'ubuntu-24.04-arm' || 'blacksmith-4vcpu-ubuntu-2404' }}
+    runs-on: ${{ inputs.runnerSuffix == '-arm' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     timeout-minutes: 120 # guardrails timeout for the whole job
     continue-on-error: ${{ github.event_name != 'pull_request' }}
     strategy:

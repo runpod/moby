@@ -42,7 +42,7 @@ env:
 
 jobs:
   docker-py:
-    runs-on: ${{ inputs.runnerSuffix == '-arm' && 'ubuntu-24.04-arm' || 'blacksmith-4vcpu-ubuntu-2404' }}
+    runs-on: ${{ inputs.runnerSuffix == '-arm' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     timeout-minutes: 120 # guardrails timeout for the whole job
     continue-on-error: ${{ github.event_name != 'pull_request' }}
     steps:
@@ -98,7 +98,7 @@ jobs:
           retention-days: 1
 
   integration-flaky:
-    runs-on: ${{ inputs.runnerSuffix == '-arm' && 'ubuntu-24.04-arm' || 'blacksmith-4vcpu-ubuntu-2404' }}
+    runs-on: ${{ inputs.runnerSuffix == '-arm' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     timeout-minutes: 120 # guardrails timeout for the whole job
     continue-on-error: ${{ github.event_name != 'pull_request' }}
     steps:
@@ -157,14 +157,14 @@ jobs:
             const extraModes = JSON.parse(`${{ env.MATRIX_EXTRA_MODES }}`);
             const runnerSuffix = `${{ env.MATRIX_RUNNER_SUFFIX }}`;
             let includes = [
-              { arch: arch, runner: runnerSuffix === '-arm' ? 'ubuntu-24.04-arm' : 'blacksmith-4vcpu-ubuntu-2404', mode: '' },
+              { arch: arch, runner: runnerSuffix === '-arm' ? 'ubuntu-24.04-arm' : 'ubuntu-24.04', mode: '' },
             ];
-            includes.push(...extraModes.map(mode => ({ arch: arch, runner: runnerSuffix === '-arm' ? 'ubuntu-24.04-arm' : 'blacksmith-4vcpu-ubuntu-2404', mode: mode })));
+            includes.push(...extraModes.map(mode => ({ arch: arch, runner: runnerSuffix === '-arm' ? 'ubuntu-24.04-arm' : 'ubuntu-24.04', mode: mode })));
 
             if (arch == "amd64") {
-              includes.push({ arch: arch, runner: 'blacksmith-4vcpu-ubuntu-2204', mode: '' });
-              includes.push({ arch: arch, runner: 'blacksmith-4vcpu-ubuntu-2204', mode: 'rootless' });
-              includes.push({ arch: arch, runner: 'blacksmith-4vcpu-ubuntu-2204', mode: 'systemd' });
+              includes.push({ arch: arch, runner: 'ubuntu-22.04', mode: '' });
+              includes.push({ arch: arch, runner: 'ubuntu-22.04', mode: 'rootless' });
+              includes.push({ arch: arch, runner: 'ubuntu-22.04', mode: 'systemd' });
             }
             await core.group(`Set matrix`, async () => {
               core.info(`matrix: ${JSON.stringify(includes)}`);
@@ -221,7 +221,7 @@ jobs:
           echo "CACHE_DEV_SCOPE=${CACHE_DEV_SCOPE}" >> $GITHUB_ENV
       -
         name: Set up AppArmor for RootlessKit
-        if: contains(matrix.mode, 'rootless') && matrix.runner != 'blacksmith-4vcpu-ubuntu-2204'
+        if: contains(matrix.mode, 'rootless') && matrix.runner != 'ubuntu-22.04'
         run: |
           cat <<EOT | sudo tee "/etc/apparmor.d/usr.local.bin.rootlesskit"
           abi <abi/4.0>,
@@ -424,7 +424,7 @@ jobs:
             });
 
   integration-cli:
-    runs-on: ${{ inputs.runnerSuffix == '-arm' && 'ubuntu-24.04-arm' || 'blacksmith-4vcpu-ubuntu-2404' }}
+    runs-on: ${{ inputs.runnerSuffix == '-arm' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     timeout-minutes: 120 # guardrails timeout for the whole job
     continue-on-error: ${{ github.event_name != 'pull_request' }}
     needs:
