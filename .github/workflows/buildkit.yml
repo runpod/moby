@@ -31,9 +31,9 @@ jobs:
     uses: ./.github/workflows/.dco.yml
 
   build-linux:
-    runs-on: ubuntu-26.04
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 60 # guardrails timeout for the whole job
-    if: ${{ github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only') }}
+    if: ${{ github.repository == 'moby/moby' && (github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only')) }}
     needs:
       - validate-dco
     steps:
@@ -59,9 +59,9 @@ jobs:
           retention-days: 1
 
   test-linux:
-    runs-on: ubuntu-26.04
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 60 # guardrails timeout for the whole job
-    if: ${{ github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only') }}
+    if: ${{ github.repository == 'moby/moby' && (github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only')) }}
     needs:
       - build-linux
     env:
@@ -169,7 +169,7 @@ jobs:
   build-windows:
     runs-on: windows-2022
     timeout-minutes: 60 # guardrails timeout for the whole job
-    if: ${{ github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only') }}
+    if: ${{ github.repository == 'moby/moby' && (github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only')) }}
     needs:
       - validate-dco
     env:
@@ -255,7 +255,7 @@ jobs:
   test-windows:
     runs-on: windows-2022
     timeout-minutes: 60 # guardrails timeout for the whole job
-    if: ${{ github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only') }}
+    if: ${{ github.repository == 'moby/moby' && (github.event_name != 'pull_request' || !contains(github.event.pull_request.labels.*.name, 'ci/validate-only')) }}
     needs:
       - build-windows
     env:

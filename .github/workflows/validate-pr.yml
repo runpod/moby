@@ -13,7 +13,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-check-labels
       cancel-in-progress: true
     if: ${{ github.event.pull_request.state == 'open' }}
-    runs-on: ubuntu-26.04
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 5
     steps:
       - name: Missing `area/` label
@@ -34,7 +34,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-check-changelog
       cancel-in-progress: true
     if: ${{ github.event.pull_request.state == 'open' }}
-    runs-on: ubuntu-26.04
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 5
     env:
       HAS_IMPACT_LABEL: ${{ contains(join(github.event.pull_request.labels.*.name, ','), 'impact/') }}
@@ -76,7 +76,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-check-commit-references
       cancel-in-progress: true
     if: ${{ github.event.pull_request.state == 'open' }}
-    runs-on: ubuntu-26.04
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 5
     steps:
       - name: Check GitHub references
@@ -124,7 +124,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}-check-pr-branch
       cancel-in-progress: true
     if: ${{ github.event.pull_request.state == 'open' }}
-    runs-on: ubuntu-26.04
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 5
     env:
       PR_TITLE: ${{ github.event.pull_request.title }}

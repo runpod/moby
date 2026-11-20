@@ -14,8 +14,8 @@ on:
 
 jobs:
   validate-milestone:
-    if: ${{ github.event.pull_request.state == 'open' }}
-    runs-on: ubuntu-26.04
+    if: ${{ github.event.pull_request.state == 'open' && github.repository == 'moby/moby' }}
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     timeout-minutes: 5
     steps:
       - name: Validate milestone matches docker next version
